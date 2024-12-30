@@ -1,0 +1,5 @@
+default&post:
+  INPUTS: 
+  OUTPUTS!required:
+  SKIPPABLE: True
+  check_outputs#stagecheck:
