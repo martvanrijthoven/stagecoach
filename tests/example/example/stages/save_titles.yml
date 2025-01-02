@@ -1,9 +1,9 @@
 save_titles:
   default:
     OUTPUTS:
-      titles_file_output#output#debug!object:
+      titles_file_output#output:
         path: /Users/mart/code/stagecoach/tests/example/output/titles.txt
-
+        
     titles:
       "*object": "example.processing.extract_titles"
       data: /Users/mart/code/stagecoach/tests/example/data.json

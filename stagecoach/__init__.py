@@ -5,10 +5,10 @@ from dicfg import ConfigReader
 from stagecoach.io import *
 from stagecoach.locking import LockInUseError, LockManager
 from stagecoach.logging import setup_logging
-from stagecoach.stage import SkipStageError
+from stagecoach.validation import SkipStageError
 from dicfg import ConfigReader, build_config as _run_stage
 from stagecoach.configuration import STAGE_CONFIG_PATH
-from pprint import pprint
+from stagecoach.version import VERSION as __version__
 
 STAGE_LOG = "stagecoach.log"
 STAGE_LOCK = "stagecoach.lock"
@@ -31,7 +31,7 @@ def run_stage(stage_name: str, config: dict) -> None:
     elapsed = end - start
     print(f"\tExecuted in {elapsed:.4f} seconds")
 
-VERSION = "v0.0.1"
+
 class Stages(BaseModel):
     stages: list[str]
     output_folder: Path
@@ -54,7 +54,7 @@ class Stages(BaseModel):
   =====                              =====                              
  =       =====   ==    ====  ====== =     =  ====    ==    ====  =    = 
  =         =    =  =  =    = =      =       =    =  =  =  =    = =    = 
-  {VERSION}   =   =    = =      = MvR  =       =    = =    = =      {chr(169)} 2025
+  {__version__}   =   =    = =      = MvR  =       =    = =    = =      {chr(169)} 2025
        =   =   ====== =  === =      =       =    = ====== =      =    = 
  =     =   =   =    = =    = =      =     = =    = =    = =    = =    = 
   =====    =   =    =  ====  ======  =====   ====  =    =  ====  =    = 
