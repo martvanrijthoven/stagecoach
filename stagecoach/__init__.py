@@ -1,3 +1,4 @@
+from pprint import pprint
 import time
 from typing import Optional
 
@@ -24,12 +25,13 @@ def run_stage(stage_name: str, config: dict) -> None:
     print_stage(stage_name, config)
     start = time.perf_counter()
     try:
-        _run_stage(config)
+        out = _run_stage(config)
     except SkipStageError:
-        print(f"\tSkipping stage {stage_name}, all output paths already exist")
+        out = f"\tSkipping stage {stage_name}, all output paths already exist"
     end = time.perf_counter()
     elapsed = end - start
     print(f"\tExecuted in {elapsed:.4f} seconds")
+    return out
 
 
 class Stages(BaseModel):
@@ -71,9 +73,13 @@ class Stages(BaseModel):
                 for stage in self.stages:
                     stage_name = Path(stage).stem
                     presets_folder = Path(stage).parent / "presets"
+                    print(presets_folder)
+                    print(self.presets)
                     reader = ConfigReader(name=stage_name, main_config_path=STAGE_CONFIG_PATH, presets=presets_folder)
                     config = reader.read((stage, *self.configs), presets=self.presets)
-                    run_stage(stage_name=stage_name, config=config[DEFAULT_KEY])
+                    pprint(config, sort_dicts=False)
+                    out = run_stage(stage_name=stage_name, config=config[DEFAULT_KEY])
+                    print(out)
         except LockInUseError:
             print(
                 f"\tStageCoach for {self.output_folder} is already running/locked. Skipping."

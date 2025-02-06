@@ -6,7 +6,11 @@ import click
 
 from stagecoach import Stages
 
-@click.command()
+@click.command(
+    context_settings=dict(
+        ignore_unknown_options=True,
+    )
+)
 @click.option(
     "--stage",
     "stages",
@@ -39,12 +43,15 @@ from stagecoach import Stages
     is_flag=True,
     help="Force re-run of pipeline even if lock is present.",
 )
+@click.argument("kwargs", nargs=-1, type=click.UNPROCESSED)
+
 def run_stages(
     stages: list[str],
     folder: Path,
     configs: Optional[tuple[str]] = (),
     presets: Optional[tuple[str]] = (),
     force_rerun: bool = False,
+    **kwargs,
 ):
     Stages(
         stages=stages,
