@@ -1,7 +1,7 @@
 from typing import ClassVar
 from pydantic import BaseModel, field_validator, model_validator
 from pathlib import Path
-from dicfg.addons.addons import TemplateAddon
+from dicfg.addons.addon import TemplateAddon
 
 
 class StageInput(TemplateAddon, BaseModel):

@@ -5,7 +5,7 @@ from typing import Optional
 from dicfg import ConfigReader
 from stagecoach.io import *
 from stagecoach.locking import LockInUseError, LockManager
-from stagecoach.logging import setup_logging
+from stagecoach.log import setup_logging
 from stagecoach.validation import SkipStageError
 from dicfg import ConfigReader, build_config as _run_stage
 from stagecoach.configuration import STAGE_CONFIG_PATH
