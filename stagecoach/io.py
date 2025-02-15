@@ -46,3 +46,12 @@ class StageOutput(TemplateAddon, BaseModel):
         }
 
 
+class OutputFolderStageOutput(StageOutput):
+    NAME: ClassVar = "outputfolder"
+
+    @classmethod
+    def _data(cls):
+        return {
+            "path!assigned": "",
+            "overwrite": True,
+        }

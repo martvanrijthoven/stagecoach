@@ -1,9 +1,5 @@
 from pathlib import Path
-from typing import Optional
-from pathlib import Path
-from typing import Optional
 import click
-
 from stagecoach import Stages
 
 @click.command(
@@ -19,23 +15,9 @@ from stagecoach import Stages
     help="One or more stages configurations to apply.",
 )
 @click.option(
-    "--folder",
+    "--output_folder",
     type=click.Path(exists=True, dir_okay=True, readable=True),
     help="Path to folder",
-)
-@click.option(
-    "--configs",
-    "configs",
-    multiple=True,
-    type=str,
-    help="One or more configurations to apply.",
-)
-@click.option(
-    "--preset",
-    "presets",
-    multiple=True,
-    type=str,
-    help="One or more preset configurations to apply.",
 )
 @click.option(
     "--force-rerun",
@@ -47,17 +29,13 @@ from stagecoach import Stages
 
 def run_stages(
     stages: list[str],
-    folder: Path,
-    configs: Optional[tuple[str]] = (),
-    presets: Optional[tuple[str]] = (),
+    output_folder: Path,
     force_rerun: bool = False,
     **kwargs,
 ):
     Stages(
         stages=stages,
-        output_folder=folder,
-        configs=configs,
-        presets=presets,
+        output_folder=output_folder,
         force_rerun=force_rerun,
     ).run()
 

@@ -1,6 +1,7 @@
 default&post:
   INPUTS: 
-  OUTPUTS!required:
+  OUTPUTS:
+    output_folder#outputfolder:
   SKIPPABLE: True
   __VALIDATE_STAGE:
     "*object": stagecoach.validation.StageValidator

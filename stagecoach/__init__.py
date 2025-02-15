@@ -17,9 +17,6 @@ DEFAULT_KEY = "default"
 
 def print_stage(stage_name: str, config: dict) -> None:
     print(f"\n\tStarting stage: {stage_name}")
-    # pprint(config, indent=1, depth=2,sort_dicts=False, compact=False)
-    # print()
-
 
 def run_stage(stage_name: str, config: dict) -> None:
     print_stage(stage_name, config)
@@ -37,17 +34,9 @@ def run_stage(stage_name: str, config: dict) -> None:
 class Stages(BaseModel):
     stages: list[str]
     output_folder: Path
-    configs: Optional[list[str]] = None
-    presets: Optional[list[str]] = None
     force_rerun: Optional[bool] = False
 
     def run(self) -> None:  # library: Path
-        if self.configs is None:
-            self.configs = []
-
-        if self.presets is None:
-            self.presets = ()
-
         self.output_folder.mkdir(parents=True, exist_ok=True)
         logger = setup_logging(self.output_folder / STAGE_LOG)
 
@@ -73,11 +62,9 @@ class Stages(BaseModel):
                 for stage in self.stages:
                     stage_name = Path(stage).stem
                     presets_folder = Path(stage).parent / "presets"
-                    print(presets_folder)
-                    print(self.presets)
                     reader = ConfigReader(name=stage_name, main_config_path=STAGE_CONFIG_PATH, presets=presets_folder)
-                    config = reader.read((stage, *self.configs), presets=self.presets)
-                    pprint(config, sort_dicts=False)
+                    config = reader.read(stage)
+                    config[DEFAULT_KEY]['OUTPUTS']['output_folder']['path'] = str(self.output_folder)
                     out = run_stage(stage_name=stage_name, config=config[DEFAULT_KEY])
                     print(out)
         except LockInUseError:
