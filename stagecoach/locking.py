@@ -10,9 +10,9 @@ class LockInUseError(Exception):
 class LockManager:
     """A class to handle file-based locking for the entire stage output directory."""
     
-    def __init__(self, name: str, folder: Path, force: bool = False):
+    def __init__(self, name: str, folder: Path, unlock: bool = False):
         self._lock_file = folder / f"{name}.lock"
-        if force:
+        if unlock:
             self.remove_lock()
 
     def create_lock(self) -> bool:
@@ -24,8 +24,7 @@ class LockManager:
         return True
 
     def remove_lock(self):
-        if self._lock_file.exists():
-            self._lock_file.unlink()
+        self._lock_file.unlink(missing_ok=True)
 
     def __enter__(self):
         self.create_lock()

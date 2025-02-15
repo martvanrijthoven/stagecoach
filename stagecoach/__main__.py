@@ -1,6 +1,8 @@
 from pathlib import Path
+
 import click
 from stagecoach import Stages
+
 
 @click.command(
     context_settings=dict(
@@ -11,32 +13,46 @@ from stagecoach import Stages
     "--stage",
     "stages",
     multiple=True,
-    type=str,
+    type=click.Path(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        path_type=Path,
+        resolve_path=True,
+    ),
     help="One or more stages configurations to apply.",
 )
 @click.option(
     "--output_folder",
-    type=click.Path(exists=True, dir_okay=True, readable=True),
+    type=click.Path(
+        exists=False,
+        file_okay=False,
+        dir_okay=True,
+        readable=True,
+        writable=True,
+        path_type=Path,
+        resolve_path=True,
+    ),
     help="Path to folder",
 )
 @click.option(
-    "--force-rerun",
-    "force_rerun",
+    "--unlock",
+    "unlock",
     is_flag=True,
-    help="Force re-run of pipeline even if lock is present.",
+    help="unlock if lock is present.",
 )
 @click.argument("kwargs", nargs=-1, type=click.UNPROCESSED)
-
 def run_stages(
-    stages: list[str],
+    stages: list[Path],
     output_folder: Path,
-    force_rerun: bool = False,
+    unlock: bool = False,
     **kwargs,
 ):
     Stages(
         stages=stages,
         output_folder=output_folder,
-        force_rerun=force_rerun,
+        unlock=unlock,
     ).run()
 
 
