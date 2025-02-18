@@ -1,9 +1,12 @@
 default&post:
+  __ID#uuid4:
+  __SYSTEM#systeminfo:
+  __DATETIME#datetimenow:
   INPUTS: 
   OUTPUTS:
     output_folder#outputfolder:
   SKIPPABLE: True
-  __VALIDATE_STAGE:
+  _VALIDATE_STAGE:
     "*object": stagecoach.validation.StageValidator
     outputs: ${OUTPUTS}
     skippable: ${SKIPPABLE}

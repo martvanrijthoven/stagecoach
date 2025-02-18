@@ -1,10 +1,12 @@
 import time
 from pathlib import Path
 from textwrap import dedent
-from typing import Optional
+from typing import Any, ClassVar, Optional
 
 from dicfg import ConfigReader
 from dicfg import build_config as _run_stage
+from dicfg.addons.addon import TemplateAddon
+from pydantic import BaseModel
 from stagecoach.configuration import STAGE_CONFIG_PATH
 from stagecoach.io import *
 from stagecoach.locking import LockInUseError, LockManager
@@ -46,33 +48,50 @@ def run_stage(stage_name: str, config: dict) -> None:
     print(out)
     print(f"Executed in {elapsed:.4f} seconds")
 
+
 class Stages(BaseModel):
-    stages: list[Path]
     output_folder: Path
+    stages: list[Path] | dict[str, dict]
+    stage_configs: Optional[dict[str, dict] | list[Path]] = None
     unlock: Optional[bool] = False
+    print_logo: Optional[bool] = False
 
     def run(self) -> None:
+        if isinstance(self.stages, list):
+            _stages = {s.stem: s for s in self.stages}
+        else:
+            _stages = self.stages
+
         self.output_folder.mkdir(parents=True, exist_ok=True)
         logger = setup_logging(self.output_folder / LOG)
-        print(self)
+
+        if self.print_logo:
+            print(self)
+
         try:
             with LockManager(name=NAME, folder=self.output_folder, unlock=self.unlock):
-                for stage in self.stages:
-                    config = self._initialize_config(stage)
-                    logger.info(f"Config for stage {stage.stem}: {config}")
-                    run_stage(stage_name=stage.stem, config=config[DEFAULT])
+                for stage_name, stage in _stages.items():
+                    config = self._initialize_config(stage_name=stage_name, stage=stage)
+                    logger.info(f"Config for stage {stage_name}: {config}")
+                    run_stage(stage_name=stage_name, config=config[DEFAULT])
         except LockInUseError:
             print(f"StageCoach at: {self.output_folder} is locked. Skipping.")
         except Exception as e:
             logger.exception(e)
             raise
 
-    def _initialize_config(self, stage: Path) -> dict:
+    def _initialize_config(self, stage_name: str, stage: Path) -> dict:
         reader = ConfigReader(
-            name=stage.stem,
+            name=stage_name,
             main_config_path=STAGE_CONFIG_PATH,
             presets=Path(stage).parent / PRESETS,
         )
+        if self.stage_configs is not None:
+            if isinstance(self.stage_configs, list):
+                stage = [stage, *self.stage_configs]
+            if stage_name in self.stage_configs:
+                stage = [stage, {stage_name: self.stage_configs[stage_name]}]
+
         config = reader.read(stage)
         config[DEFAULT][OUTPUTS][OUTPUT_FOLDER][PATH] = str(self.output_folder)
         return config
@@ -90,3 +109,29 @@ class Stages(BaseModel):
         return template.format(
             dashes="-" * 72, art=STAGECOACH_ART, folder=self.output_folder
         )
+
+
+class StageCoach(TemplateAddon, BaseModel):
+
+    NAME: ClassVar[str] = "trails"
+
+    output_folder: Path
+    stages: list[str]
+    trails: dict[str, Any]  # [name_of_trail (eg. image_name): [stage_name: config]]
+
+    @classmethod
+    def _data(cls):
+        return {"stages!required": None, "trails!required": None}
+
+    def __iter__(self):
+        for name, trial in self.trails.items():
+            yield (name, trial)
+
+
+def run(stage_coach: StageCoach):
+    for name, trail in iter(stage_coach):
+        Stages(
+            output_folder=stage_coach.output_folder / name,
+            stages=stage_coach.stages,
+            stage_configs=trail,
+        ).run()
