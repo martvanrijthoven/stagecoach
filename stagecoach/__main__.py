@@ -59,19 +59,12 @@ from stagecoach.configuration import STAGE_COACH_CONFIG_PATH
     is_flag=True,
     help="unlock if lock is present.",
 )
-@click.option(
-    "--hide-logo",
-    "hide_logo",
-    is_flag=True,
-    help="Hide stagecoach logo.",
-)
 @click.argument("kwargs", nargs=-1, type=click.UNPROCESSED)
 def run_stages(
     output_folder: Path,
     stages: Optional[list[Path]],
-    stage_configs: Optional[list[Path]] = None,
+    stage_configs: Optional[list[Path]| dict] = None,
     unlock: bool = False,
-    hide_logo: bool = False,
     **kwargs,
 ):
     if not stages:
@@ -83,7 +76,6 @@ def run_stages(
         stage_configs=stage_configs,
         output_folder=output_folder,
         unlock=unlock,
-        print_logo=not hide_logo
     ).run()
 
 
