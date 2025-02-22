@@ -1,0 +1,9 @@
+to_trails:
+  default:
+    SKIPPABLE: True
+    OUTPUTS:
+      test#output:
+        path: /tmp/test.txt
+    run_trails:
+      "*object": "scintegration.utils.to_trail"
+      i: 0

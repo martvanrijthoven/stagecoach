@@ -1,11 +1,9 @@
 stagecoach:
   default:
     SKIPPABLE: False
-    learning_rate: 1.0
-    output_folder: ${OUTPUTS:output_folder.path}
 
     stages!required:
-    trails!required:
+    trails: None
 
     stage_coach#stagecoach:
       output_folder: ${OUTPUTS:output_folder.path}

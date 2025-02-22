@@ -1,0 +1,56 @@
+site_name: Stagecoach Documentation
+nav:
+  - Home: index.md
+  # - Installation: installation.md
+  # - Usage: usage.md
+  # - Configuration: configuration.md
+  # - Examples: examples.md
+theme:
+  name: material
+  logo: assets/stagecoach_wheel_animation.gif
+  favicon: assets/stagecoach_wheel.png
+  font:
+    text: Londrina
+  palette:
+    primary: deep orange
+  features:
+    - content.code.copy
+    - content.code.annotate 
+    - content.code.annotate 
+    - navigation.indexes
+    - navigation.footer
+
+site_name: ""
+extra_css:
+  - stylesheets/extra.css
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+plugins:
+  - search
+  - include-markdown:
+      # Optionally configure its settings
+      # For example, to process the included file with Markdown:
+      preserve_includer_indent: true
+
+nav:
+  - Home: index.md
+  - Overview: overview.md
+  - Example: 
+    - example/index.md 
+    - training: example/training.md
+    - inference: example/inference.md
+    - report generation: example/report.md

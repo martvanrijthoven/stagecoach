@@ -1,0 +1,4 @@
+default:
+  optimizer:
+    "*object": torch.optim.Adam
+

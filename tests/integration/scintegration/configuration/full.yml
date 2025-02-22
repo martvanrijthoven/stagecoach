@@ -1,0 +1,41 @@
+# TODO lock per stage, default lock per stages
+# TODO check if stage-configs/trails can be only in stagecoach object (i.e., merge before running Stages)
+# TODO create Trails object, lock per trail/stage  
+
+
+
+full:
+  default:
+    SKIPPABLE: False
+
+
+    welcome#stagecoach:
+      output_folder: ${OUTPUTS:output_folder.path}/welcome
+      stages:
+        - /Users/mart/code/stagecoach/tests/integration/scintegration/configuration/welcome.yml
+
+    _trails:
+      trails-1:
+        to_trails:
+          default:
+            run_trails:
+              i: 1
+      trails-2:
+        to_trails:
+          default:
+            run_trails:
+              i: 2
+
+    to_trails#stagecoach:
+      output_folder: ${OUTPUTS:output_folder.path}/to_trails
+      stages:
+        - /Users/mart/code/stagecoach/tests/integration/scintegration/configuration/to_trails.yml
+      trails: ${_trails}
+      wait: ${OUTPUTS:output_folder.path}/welcome/stagecoach.lock
+
+
+    welcome2#stagecoach:
+      output_folder: ${OUTPUTS:output_folder.path}/welcome
+      stages:
+        - /Users/mart/code/stagecoach/tests/integration/scintegration/configuration/welcome.yml
+      wait: ${OUTPUTS:output_folder.path}/to_trails/trails-2/stagecoach.lock

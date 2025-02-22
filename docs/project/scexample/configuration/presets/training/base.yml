@@ -1,0 +1,55 @@
+# This file contains the example (base) configuration for the training stage. 
+# Typically when using stagecoach, you define such a configutation once
+# and then override the parameters when running the stagecoach command
+# with presets, other config files or command line arguments.
+# So normally you would do not need to change this file often.
+# It mainly serves as a blueprint for the configuration of the training stage.
+
+default:
+  # Set SKIPPABLE (config defined in stagecoach configuration file) 
+  # to False to ensure that the stage is always run, even if all outputs exist
+  SKIPPABLE: False                                          
+  
+  # OUTPUTS are a way to configure any artefacts that are made during execution
+  # Here we define the output path to the model. Note that the output_folder is
+  # already being set in the stagecoach configuration file and is being passed
+  # in as a parameter when running stagecoach. 
+  # All outputs will be check for exisitence to skip a stage if all outputs exist
+  OUTPUTS:
+    model_output#output:
+      path: ${OUTPUTS:output_folder.path}/model.pt
+
+  # Define the parameters that are required for the stage
+  epochs!int: 10 # epochs should be an int
+  learning_rate!number: 0.001 # learning_rate should be a number
+
+  # using &pre to define new configuration before the train_data/test_data
+  # checkout presets/datasets/mnist.yml for transform confguration
+  data&pre: 
+    train_data!required!object:
+    test_data!required!object:
+
+  data_loaders&pre:
+    "*object": scexample.data.get_dataloaders
+    train_data: ${data:train_data}
+    test_data: ${data:test_data}
+
+  model!object: # model should be an object
+  criterion!object: # criterion should be an object
+
+  # default object (torch.optim.Adam) for the optimizer
+  optimizer!object:
+    "*object": torch.optim.SGD
+    params: ${model.parameters}
+    lr: ${learning_rate}
+
+  # configure the actual training function with all dependencies.
+  train: 
+    "*object": "scexample.training.train"
+    model_output_path: ${OUTPUTS:model_output.path}
+    train_loader: ${data_loaders.train}
+    valid_loader: ${data_loaders.valid}
+    model: ${model}
+    optimizer: ${optimizer}
+    criterion: ${criterion}
+    n_epochs: ${epochs}

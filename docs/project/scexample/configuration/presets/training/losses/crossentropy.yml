@@ -1,0 +1,3 @@
+default:
+  criterion: 
+    "*object": torch.nn.CrossEntropyLoss

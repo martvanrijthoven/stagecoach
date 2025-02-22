@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import time
 
 
 class LockInUseError(Exception):
@@ -10,8 +11,9 @@ class LockInUseError(Exception):
 class LockManager:
     """A class to handle file-based locking for the entire stage output directory."""
     
-    def __init__(self, name: str, folder: Path, unlock: bool = False):
+    def __init__(self, name: str, folder: Path, unlock: bool = False, wait: bool = False):
         self._lock_file = folder / f"{name}.lock"
+        self._wait = wait
         if unlock:
             self.remove_lock()
 
@@ -27,7 +29,17 @@ class LockManager:
         self._lock_file.unlink(missing_ok=True)
 
     def __enter__(self):
-        self.create_lock()
+        if self._wait:
+            while True:
+                try:
+                    self.create_lock()
+                    break
+                except LockInUseError:
+                    print(f"Waiting for lock to be released: {self._lock_file}")
+                    time.sleep(2)
+        else:
+            self.create_lock()
+
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):

@@ -55,6 +55,7 @@ class Stages(BaseModel):
     stages: list[Path] | dict[str, dict]
     stage_configs: Optional[dict[str, dict] | list[Path]] = None
     unlock: Optional[bool] = False
+    wait: Optional[bool] = False
 
     @property
     def _stages(self):
@@ -74,11 +75,16 @@ class Stages(BaseModel):
         if stage_name in self.stage_configs:
             return [stage, {stage_name: self.stage_configs[stage_name]}]
 
-    def _initialize_config(self, stage_name: str, stage: Path) -> dict:
+    def _initialize_config(self, stage_name: str, stage: Path | dict) -> dict:
+        if isinstance(stage, Path):
+            presets =  Path(stage).parent / PRESETS
+        else:
+            presets = "presets"
+            
         reader = ConfigReader(
             name=stage_name,
             main_config_path=STAGE_CONFIG_PATH,
-            presets=Path(stage).parent / PRESETS,
+            presets=presets
         )
         stage_config = self._get_stage_config(stage_name, stage)
         config = reader.read(stage_config)
@@ -91,7 +97,8 @@ class Stages(BaseModel):
         logger = setup_logging(self.output_folder / LOG)
 
         try:
-            with LockManager(name=NAME, folder=self.output_folder, unlock=self.unlock):
+            with LockManager(name=NAME, folder=self.output_folder, unlock=self.unlock, wait=self.wait):
+                print("what")
                 print(self)
                 for stage_name, stage in self._stages.items():
                     config = self._initialize_config(stage_name=stage_name, stage=stage)
@@ -120,24 +127,36 @@ class Stages(BaseModel):
 
 
 class StageCoach(TemplateAddon, BaseModel):
-
     NAME: ClassVar[str] = "stagecoach"
-
     output_folder: Path
-    stages: list[str]
-    trails: dict[str, Any]  # [name_of_trail (eg. image_name): [stage_name: config]]
+    stages: list[str|Path] | dict
+    trails: Optional[dict[str, Any]] = None  # [name_of_trail (eg. image_name): [stage_name: config]]
+    wait: Optional[str | Path] = None
 
     def model_post_init(self, __context):
         self()
 
     @classmethod
     def _data(cls):
-        return {"stages!required": None, "trails!required": None}
+        return {"stages!required": None, "trails": None}
 
     def __call__(self):
-        for name, trail in self.trails.items():
+        
+        if self.wait is not None:
+            wait = Path(self.wait)
+            while wait.exists():
+                print(f"Waiting for lock to be released: {self.wait}")
+                time.sleep(2)
+
+        if self.trails is None:
             Stages(
-                output_folder=self.output_folder / name,
+                output_folder=self.output_folder,
                 stages=self.stages,
-                stage_configs=trail,
             ).run()
+        else:
+            for name, trail in self.trails.items():
+                Stages(
+                    output_folder=self.output_folder / name,
+                    stages=self.stages,
+                    stage_configs=trail,
+                ).run()

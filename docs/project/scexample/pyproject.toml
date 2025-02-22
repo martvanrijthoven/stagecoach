@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "stagecoach"
+version = "0.0.1"
+description = "An example for using stagecoach"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Mart van Rijthoven", email = "mart.vanrijthoven@gmail.com" }
+]
+requires-python = ">=3.9"
+dependencies = [
+    "pytest",
+    "pytest-cov"
+    "pytorch"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta"
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.version]
+path = "stagecoach/version.py"
+
+[tool.hatch.build.targets.sdist]
+include = ["stagecoach/**", "README.md", "LICENSE"]
+
+[tool.hatch.build.targets.wheel]
+include = ["stagecoach/**", "README.md", "LICENSE"]
+
+[tool.hatch.envs.default]
+dependencies = [
+    "pytest",
+    "pytest-cov"
+]
+commands = [
+    "pytest --cov=stagecoach tests"
+]
