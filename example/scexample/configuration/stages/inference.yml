@@ -1,0 +1,3 @@
+inference:
+  default:
+    inference%command: echo "Running Inference..."

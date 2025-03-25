@@ -49,9 +49,14 @@ class StageOutput(TemplateAddon, BaseModel):
 class OutputFolderStageOutput(StageOutput):
     NAME: ClassVar = "outputfolder"
 
+    @model_validator(mode="after")
+    def ensure_folder_exists(self):
+        self.path.mkdir(parents=True, exist_ok=True)  
+        return self 
+
     @classmethod
     def _data(cls):
         return {
-            "path!assigned": "",
+            "path!required": "",
             "overwrite": True,
         }

@@ -43,13 +43,21 @@ default:
     params: ${model.parameters}
     lr: ${learning_rate}
 
-  # configure the actual training function with all dependencies.
-  train: 
-    "*object": "scexample.training.train"
-    model_output_path: ${OUTPUTS:model_output.path}
-    train_loader: ${data_loaders.train}
-    valid_loader: ${data_loaders.valid}
+  # configure the training model
+  training_model: 
+    "*object": scexample.training.TrainingModel
     model: ${model}
     optimizer: ${optimizer}
     criterion: ${criterion}
-    n_epochs: ${epochs}
+
+  # configure the trainer
+  trainer: 
+    "*object": scexample.training.Trainer 
+    dataloaders: ${data_loaders}
+    training_model: ${training_model}
+    n_epochs: 2
+    output_folder: ${OUTPUTS:output_folder.path}
+
+  # run the training
+  train#call:
+    callable: ${trainer.train}

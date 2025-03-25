@@ -2,7 +2,8 @@ import urllib
 import numpy as np
 from torch.utils.data.sampler import SubsetRandomSampler
 import torch
-
+from collections import namedtuple
+DataLoaders = namedtuple('DataLoaders', ['train', 'valid', 'test'])
 
 def get_dataloaders(train_data, test_data):
     opener = urllib.request.build_opener()
@@ -37,7 +38,6 @@ def get_dataloaders(train_data, test_data):
         num_workers=num_workers)
 
     # make named tuple such that dataloaders can be accessed by propoery name
-    from collections import namedtuple
-    DataLoaders = namedtuple('DataLoaders', ['train', 'valid', 'test'])
+
     dataloaders = DataLoaders(train=train_loader, valid=valid_loader, test=test_loader)
     return dataloaders

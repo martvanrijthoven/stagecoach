@@ -3,8 +3,11 @@
   .md-content__button {
     display: none;
   }
+  .md-header__topic {
+    display: none;
+  }
 </style>
-
+# "
 
 ![Image title](../assets/stagecoach_wheel_animation.gif)
 Stagecoach is a framework for running complex data processing workflows.

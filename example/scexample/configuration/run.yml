@@ -1,0 +1,17 @@
+run:
+  default:
+    SKIPPABLE: False
+    
+    output_folder: /Users/mart/code/stagecoach/example/output
+    application_folder: /Users/mart/code/stagecoach/example/scexample/configuration/
+
+    run_stages#stagecoach: 
+      stages:
+        - ${application_folder}/stages/train.yml
+        - ${application_folder}/stages/inference.yml
+        - ${application_folder}/stages/report.yml
+
+      trails#trails:
+        traces:
+          sgd%include: /Users/mart/code/stagecoach/example/scexample/configuration//traces/sgd.yml
+          adam%include: /Users/mart/code/stagecoach/example/scexample/configuration//traces/adam.yml

@@ -1,0 +1,3 @@
+report:
+  default:
+    inference%command: echo "Running report..."

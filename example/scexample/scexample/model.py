@@ -3,7 +3,8 @@ import torch.nn.functional as F
 
 # define the NN architecture
 class Net(nn.Module):
-    def __init__(self):
+    def __init__(self, model_output_path):
+        self._model_output_path = model_output_path 
         super(Net, self).__init__()
         # number of hidden nodes in each layer (512)
         hidden_1 = 512
@@ -36,3 +37,4 @@ class Net(nn.Module):
     @property
     def parameters(self):
         return super().parameters()
+    

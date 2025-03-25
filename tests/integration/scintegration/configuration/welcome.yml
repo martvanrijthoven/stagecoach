@@ -1,8 +1,7 @@
 welcome:
   default:
     SKIPPABLE: True
-    OUTPUTS:
-      test#output:
-        path: /tmp/test.txt
+    name: "welcome"
+    output_folder: /tmp
     welcome_to_stage_coach: 
       "*object": "scintegration.utils.welcome_to_stagecoach"

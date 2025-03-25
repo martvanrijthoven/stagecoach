@@ -1,11 +1,11 @@
-<style>
+<!-- <style>
   .md-typeset h1,
   .md-content__button {
     display: none;
   }
-</style>
-#### **Training** 
-----
+</style> -->
+# Training
+
 
 
 <div class="code-container">

@@ -1,4 +1,0 @@
-default:
-  model: 
-    "*object": scexample.model.Net
-    

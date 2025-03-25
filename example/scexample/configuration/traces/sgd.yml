@@ -1,0 +1,11 @@
+train:
+  default:
+    output_folder: ${OUTPUTS:output_folder.path}/sgd/training
+    optimizer#dontbuild:
+      "*object": torch.optim.SGD
+inference:
+  default:
+    output_folder: ${OUTPUTS:output_folder.path}/sgd/inference
+report:
+  default:
+    output_folder: ${OUTPUTS:output_folder.path}/sgd/report

@@ -19,6 +19,3 @@ class StageValidator(BaseModel):
 
     def _all_exist(self):
         return all([output.path.exists() for output in self.outputs.values()])
-
-
- 

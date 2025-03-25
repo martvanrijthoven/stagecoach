@@ -1,0 +1,7 @@
+train:
+  presets: 
+    - training/base.yml
+    - components/datasets/mnist.yml
+    - components/optimizers/adam.yml
+    - components/losses/crossentropy.yml
+    - components/models/net.yml

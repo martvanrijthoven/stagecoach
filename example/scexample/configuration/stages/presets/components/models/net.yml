@@ -1,0 +1,4 @@
+default:
+  model: 
+    "*object": scexample.model.Net
+    model_output_path: ${OUTPUTS:output_folder.path}/model.pth

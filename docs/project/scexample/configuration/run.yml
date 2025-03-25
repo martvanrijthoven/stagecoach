@@ -1,7 +1,0 @@
-stagecoach:
-  default:
-    stages:
-      - run_evaluation.yml
-      - run_training.yml
-
-

@@ -1,13 +1,6 @@
-<style>
-  .md-typeset h1,
-  .md-content__button {
-    display: none;
-  }
-</style>
-
-#### **Example**
+# Example
 ###### **Creating an AI Model**
-----
+
 
 This example demonstrates Stagecoach for deep learning model training, digit classification, inference, and automated performance reporting. We will build it step by step in three parts:
 
